@@ -15,14 +15,15 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/visualization.jpg "Visualization"
-[image2]: ./examples/grayscale.jpg "Grayscaling"
-[image3]: ./examples/random_noise.jpg "Random Noise"
-[image4]: ./examples/placeholder.png "Traffic Sign 1"
-[image5]: ./examples/placeholder.png "Traffic Sign 2"
-[image6]: ./examples/placeholder.png "Traffic Sign 3"
-[image7]: ./examples/placeholder.png "Traffic Sign 4"
-[image8]: ./examples/placeholder.png "Traffic Sign 5"
+[lization.jpgimage1]: ./examples/visualization.jpg "visualization"
+[image2]: ./examples/grayscale.jpg "grayscaling"
+[image3]: ./examples/limit20.jpg "limit speed 20"
+[image4]: ./examples/limit20_translation.jpg "limit speed 20"
+[image5]: ./examples/placeholder.png "traffic sign 1"
+[image6]: ./examples/placeholder.png "traffic sign 2"
+[image7]: ./examples/placeholder.png "traffic sign 3"
+[image8]: ./examples/placeholder.png "traffic sign 4"
+[image9]: ./examples/placeholder.png "traffic sign 5"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -38,15 +39,15 @@ signs data set:
 Number of training examples = 215000
 
 
-* The size of training set is 34799 
+* The size of training set is 34799
 * The size of the validation set is 4410
-* The size of test set is 12630 
+* The size of test set is 12630
 * The shape of a traffic sign image is 32 * 32 * 3
 * The number of unique classes/labels in the data set is 43
 
 ####2. Include an exploratory visualization of the dataset.
 
-Here is an exploratory visualization of the data set. It is a bar chart showing how the data ...
+Here is an exploratory visualization of the data set. It is a bar chart showing how skewed the data distributed.
 
 ![alt text][image1]
 
@@ -55,66 +56,73 @@ Here is an exploratory visualization of the data set. It is a bar chart showing 
 ####1. Describe how you preprocessed the image data. What techniques were chosen and why did you choose these techniques? Consider including images showing the output of each preprocessing technique. Pre-processing refers to techniques such as converting to grayscale, normalization, etc. (OPTIONAL: As described in the "Stand Out Suggestions" part of the rubric, if you generated additional data for training, describe why you decided to generate additional data, how you generated the data, and provide example images of the additional data. Then describe the characteristics of the augmented training set like number of images in the set, number of images for each class, etc.)
 
 As a first step, I decided to convert the images to grayscale because grayscale is small and convenient to process by computer.
-Furthermore grayscale is enough to identify. 
+Furthermore grayscale is enough to identify.
 
 Here is an example of a traffic sign image before and after grayscaling.
 
 ![alt text][image2]
 
-As a last step, I normalized the image data because ...
+As a last step, I normalized the image data because the data should has mean zero and equal variance.
 
-I decided to generate additional data because ... 
+I decided to generate additional data because the trainning samples are very unbalanced.
+Some labels have very little samples, while some have many more samples.
 
-To add more data to the the data set, I used the following techniques because ... 
+To add more data to the the data set, I used the following techniques:
+randomly pick from 1 to 5, and increase the trainning samples up to 5000.
+1. adjust the brightness of the image radomly
+2. rotate the image radomly
+3. translate the image radomly
+4. shear the image radomly
+5. scale the image radomly
 
-Here is an example of an original image and an augmented image:
+Here is an example of an original image and an augmented image(translation):
 
-![alt text][image3]
-
-The difference between the original data set and the augmented data set is the following ... 
+![alt text][image3][image4]
 
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
 
 My final model consisted of the following layers:
 
-| Layer         		|     Description	        					| 
-|:---------------------:|:---------------------------------------------:| 
-| Input         		| 32x32x3 RGB image   							| 
-| Convolution 3x3     	| 1x1 stride, same padding, outputs 32x32x64 	|
+| Layer         		|     Description	        					|
+|:---------------------:|:---------------------------------------------:|
+| Input         		| 32x32x3 RGB image   							|
+| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x24 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 16x16x64 				|
-| Convolution 3x3	    | etc.      									|
-| Fully connected		| etc.        									|
-| Softmax				| etc.        									|
-|						|												|
-|						|												|
- 
+| Max pooling	      	| 2x2 stride,  outputs 14x14x24 				|
+| Convolution 5x5	    | input = 14x14x24 output = 10x10x64     		|
+| RELU					|												|
+| Max pooling	      	| input = 10x10x64, output = 5x5x64             |
+| Dropout	         	| 0.5                                           |
+| Fully connected		| input = 1024, output = 480        			|
+| Fully connected		| input = 480, output = 43                      |
 
 
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an ....
+To train the model, I used an Adam Optimizer with learning rate 0.0001. Every epoch i feed it with a batch of 128 input images. Before dense, I dropped half of the training samples.
 
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* training set accuracy of ?
-* validation set accuracy of ? 
-* test set accuracy of ?
+* validation set accuracy of 0.974
+* test set accuracy of 0.970
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
-* What were some problems with the initial architecture?
-* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
-* Which parameters were tuned? How were they adjusted and why?
-* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+lenet, because the dataset is small and the sample of dataset is simple, so i think lenet is fully qualified.
 
-If a well known architecture was chosen:
-* What architecture was chosen?
-* Why did you believe it would be relevant to the traffic sign application?
-* How does the final model's accuracy on the training, validation and test set provide evidence that the model is working well?
- 
+* What were some problems with the initial architecture?
+In the beginning, I don't konw how to determine the number of the filters and the output of the fully connected.
+
+* How was the architecture adjusted and why was it adjusted? Typical adjustments could include choosing a different model architecture, adding or taking away layers (pooling, dropout, convolution, etc), using an activation function or changing the activation function. One common justification for adjusting an architecture would be due to overfitting or underfitting. A high accuracy on the training set but low accuracy on the validation set indicates over fitting; a low accuracy on both sets indicates under fitting.
+I just adjust the feature map size, the number of the filters and the output of the fully connected. 
+
+* Which parameters were tuned? How were they adjusted and why?
+I tuned the number of the filters. In order to get more features, I add more filters.
+
+* What are some of the important design choices and why were they chosen? For example, why might a convolution layer work well with this problem? How might a dropout layer help with creating a successful model?
+I tuned the number of the filters to find fitting filters in convolution layer. To prevent overfitting, I dropped half of samples before fully connection layer.
 
 ###Test a Model on New Images
 
