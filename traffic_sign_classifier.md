@@ -19,11 +19,11 @@ The goals / steps of this project are the following:
 [image2]: ./examples/grayscale.jpg "grayscaling"
 [image3]: ./examples/limit20.jpg "limit speed 20"
 [image4]: ./examples/limit20_translation.jpg "limit speed 20"
-[image5]: ./examples/placeholder.png "traffic sign 1"
-[image6]: ./examples/placeholder.png "traffic sign 2"
-[image7]: ./examples/placeholder.png "traffic sign 3"
-[image8]: ./examples/placeholder.png "traffic sign 4"
-[image9]: ./examples/placeholder.png "traffic sign 5"
+[image5]: ./examples/sign1.jpg "traffic sign 1"
+[image6]: ./examples/sign2.jpg "traffic sign 2"
+[image7]: ./examples/sign3.png "traffic sign 3"
+[image8]: ./examples/sign4.png "traffic sign 4"
+[image9]: ./examples/sign5.png "traffic sign 5"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -35,8 +35,6 @@ The goals / steps of this project are the following:
 
 I used the pandas library to calculate summary statistics of the traffic
 signs data set:
-
-Number of training examples = 215000
 
 
 * The size of training set is 34799
@@ -75,9 +73,10 @@ randomly pick from 1 to 5, and increase the trainning samples up to 5000.
 4. shear the image radomly
 5. scale the image radomly
 
-Here is an example of an original image and an augmented image(translation):
+Here is an example of an original image and an augmented image:
 
-![alt text][image3][image4]
+![alt text][image3] 
+![alt text][image4]
 
 
 ####2. Describe what your final model architecture looks like including model type, layers, layer sizes, connectivity, etc.) Consider including a diagram and/or table describing the final model.
@@ -130,10 +129,9 @@ I tuned the number of the filters to find fitting filters in convolution layer. 
 
 Here are five German traffic signs that I found on the web:
 
-![alt text][image4] ![alt text][image5] ![alt text][image6] 
-![alt text][image7] ![alt text][image8]
+![alt text][image5] ![alt text][image6] ![alt text][image7] 
+![alt text][image8] ![alt text][image9]
 
-The first image might be difficult to classify because ...
 
 ####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
 
@@ -142,13 +140,13 @@ Here are the results of the prediction:
 | Image			        |     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | Stop Sign      		| Stop sign   									| 
-| U-turn     			| U-turn 										|
-| Yield					| Yield											|
-| 100 km/h	      		| Bumpy Road					 				|
-| Slippery Road			| Slippery Road      							|
+| Speed limit (20km/h)  | Speed limit (50km/h) 							|
+| No passing		    | Yield											|
+| Ahead only	    	| Yield     					 				|
+| Road work             | Yield                                         |
 
+Except the stop sign, the others are incorrect. I have review code, but can't find the reason.
 
-The model was able to correctly guess 4 of the 5 traffic signs, which gives an accuracy of 80%. This compares favorably to the accuracy on the test set of ...
 
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
 
@@ -158,11 +156,10 @@ For the first image, the model is relatively sure that this is a stop sign (prob
 
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| .60         			| Stop sign   									| 
-| .20     				| U-turn 										|
-| .05					| Yield											|
-| .04	      			| Bumpy Road					 				|
-| .01				    | Slippery Road      							|
+| .100         			| Stop sign   									| 
+| .0     				| Yield 										|
+| .0     				| Speed limit (30km/h) 							|
+
 
 
 For the second image ... 
