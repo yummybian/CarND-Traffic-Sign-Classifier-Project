@@ -1,4 +1,4 @@
-#**Traffic Sign Recognition** 
+# Traffic Sign Recognition
 
 ---
 
@@ -15,15 +15,16 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[lization.jpgimage1]: ./examples/visualization.jpg "visualization"
+[image1]: ./examples/visualization.png "visualization"
 [image2]: ./examples/grayscale.jpg "grayscaling"
 [image3]: ./examples/limit20.jpg "limit speed 20"
 [image4]: ./examples/limit20_translation.jpg "limit speed 20"
-[image5]: ./examples/sign1.jpg "traffic sign 1"
-[image6]: ./examples/sign2.jpg "traffic sign 2"
-[image7]: ./examples/sign3.png "traffic sign 3"
-[image8]: ./examples/sign4.png "traffic sign 4"
-[image9]: ./examples/sign5.png "traffic sign 5"
+[image5]: ./examples/sign_1.jpg "traffic sign 1"
+[image6]: ./examples/sign_2.png "traffic sign 2"
+[image7]: ./examples/sign_3.jpg "traffic sign 3"
+[image8]: ./examples/sign_4.jpg "traffic sign 4"
+[image9]: ./examples/sign_5.jpg "traffic sign 5"
+[image10]: ./examples/sign_6.jpg "traffic sign 6"
 
 ## Rubric Points
 ###Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/481/view) individually and describe how I addressed each point in my implementation.  
@@ -85,31 +86,40 @@ My final model consisted of the following layers:
 
 | Layer         		|     Description	        					|
 |:---------------------:|:---------------------------------------------:|
-| Input         		| 32x32x3 RGB image   							|
-| Convolution 5x5     	| 1x1 stride, valid padding, outputs 28x28x24 	|
+| Input         		| 32x32x1 normalized gray image   							|
+| Convolution 3x3     	| 1x1 stride, valid padding, outputs 30x30x32 	|
 | RELU					|												|
-| Max pooling	      	| 2x2 stride,  outputs 14x14x24 				|
-| Convolution 5x5	    | input = 14x14x24 output = 10x10x64     		|
+| Convolution 3x3	    | input = 30x30x32 output = 28x28x32     		|
+| RELU					|												|
+| Max pooling	      	| input = 28x28x32, output = 14x14x32           |
+| Convolution 3x3	    | input = 14x14x32 output = 12x12x64     		|
+| RELU					|												|
+| Convolution 3x3	    | input = 12x12x64 output = 10x10x64     		|
 | RELU					|												|
 | Max pooling	      	| input = 10x10x64, output = 5x5x64             |
-| Dropout	         	| 0.5                                           |
-| Fully connected		| input = 1024, output = 480        			|
-| Fully connected		| input = 480, output = 43                      |
+| Convolution 3x3	    | input = 5x5x64 output = 3x3x128     		    |
+| RELU					|												|
+| Fully connected		| input = 1152, output = 1024        			|
+| RELU					|												|
+| Fully connected		| input = 1024, output = 1024        			|
+| RELU					|												|
+| Dropout	         	| 0.65                                          |
+| Fully connected		| input = 1024, output = 43          			|
 
 
 ####3. Describe how you trained your model. The discussion can include the type of optimizer, the batch size, number of epochs and any hyperparameters such as learning rate.
 
-To train the model, I used an Adam Optimizer with learning rate 0.0001. Every epoch i feed it with a batch of 128 input images. Before dense, I dropped half of the training samples.
+To train the model, I used an Adam Optimizer with learning rate 0.001. Every epoch i feed it with a batch of 128 input images. Before dense, I dropped half of the training samples.
 
 ####4. Describe the approach taken for finding a solution and getting the validation set accuracy to be at least 0.93. Include in the discussion the results on the training, validation and test sets and where in the code these were calculated. Your approach may have been an iterative process, in which case, outline the steps you took to get to the final solution and why you chose those steps. Perhaps your solution involved an already well known implementation or architecture. In this case, discuss why you think the architecture is suitable for the current problem.
 
 My final model results were:
-* validation set accuracy of 0.973
-* test set accuracy of 0.965
+* validation set accuracy of 0.990
+* test set accuracy of 0.977
 
 If an iterative approach was chosen:
 * What was the first architecture that was tried and why was it chosen?
-lenet, because the dataset is small and the sample of dataset is simple, so i think lenet is fully qualified.
+lenet, but I add up to eight layers. Because the lenet of five layers can't extract more feaures, so I added three layers additionly.
 
 * What were some problems with the initial architecture?
 In the beginning, I don't konw how to determine the number of the filters and the output of the fully connected.
@@ -130,7 +140,7 @@ I tuned the number of the filters to find fitting filters in convolution layer. 
 Here are five German traffic signs that I found on the web:
 
 ![alt text][image5] ![alt text][image6] ![alt text][image7] 
-![alt text][image8] ![alt text][image9]
+![alt text][image8] ![alt text][image9] ![alt text][image10]
 
 
 ####2. Discuss the model's predictions on these new traffic signs and compare the results to predicting on the test set. At a minimum, discuss what the predictions were, the accuracy on these new predictions, and compare the accuracy to the accuracy on the test set (OPTIONAL: Discuss the results in more detail as described in the "Stand Out Suggestions" part of the rubric).
@@ -139,13 +149,14 @@ Here are the results of the prediction:
 
 | Image			        |     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| Stop Sign      		| Stop sign   									| 
-| Speed limit (20km/h)  | Speed limit (50km/h) 							|
-| No passing		    | Yield											|
-| Ahead only	    	| Yield     					 				|
-| Road work             | Yield                                         |
+| Stop                  | Stop                                          | 
+| Speed limit (50km/h)  | Speed limit (50km/h) 							|
+| Speed limit (130km/h) | Speed limit (120km/h) 						|
+| No entry		        | No entry										|
+| General caution	    | General caution     					 		|	
+| Priority road         | Priority road                                 |
 
-Except the stop sign, the others are incorrect. I have review code, but can't find the reason.
+Because the speed limit(130km/h) does not exist in the training set, so it can't be recognized. The other signs are predicted perfectly.
 
 
 ####3. Describe how certain the model is when predicting on each of the five new images by looking at the softmax probabilities for each prediction. Provide the top 5 softmax probabilities for each image along with the sign type of each probability. (OPTIONAL: as described in the "Stand Out Suggestions" part of the rubric, visualizations can also be provided such as bar charts)
@@ -156,15 +167,13 @@ For the first image, the model is relatively sure that this is a stop sign (prob
 
 | Probability         	|     Prediction	        					| 
 |:---------------------:|:---------------------------------------------:| 
-| .100         			| Stop sign   									| 
-| .0     				| Children crossing								|
-| .0     				| Roundabout mandatory                          |
-| .0     				| Speed limit (30km/h)                          |
-| .0     				| Speed limit (120km/h)                         |
+| .100                  | Stop                                          | 
+| .100                  | Speed limit (50km/h) 							|
+| .0                    | Speed limit (130km/h) 						|
+| .100   		        | No entry										|
+| .100                  | General caution     					 		|	
+| .100                  | Priority road                                 |
 
-
-
-For the second image ... 
 
 ### (Optional) Visualizing the Neural Network (See Step 4 of the Ipython notebook for more details)
 ####1. Discuss the visual output of your trained network's feature maps. What characteristics did the neural network use to make classifications?
